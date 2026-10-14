@@ -89,6 +89,8 @@ Tab counts show matching/total records when filters hide some entries.
 
 Click a column heading to sort, then click again to reverse the order. Your sorting choice is saved. A player's next accepted advert updates their existing row and can move it to another tab. Manual cell edits stay locked until you restore the parsed value, including when a repeat advert changes tab.
 
+Roles accept counts such as `3xDPS` and `heal1`. In a roster such as `2/2 tanks 1/3 healers 5/5 DPS`, only Healer is still needed. Minimum levels such as `53+` are kept separate from recruitment counts and raid sizes. Linked quest and item titles do not add roles or character levels.
+
 **Rows remain throughout the current session without automatic age or count cleanup.** An old row can fade but stays available until updated or manually removed. At every addon load, including `/reload`, only records **younger than one hour** are restored. Logout also trims saved history to that period. Window positions and settings remain saved.
 
 Use **Clear Tab**, **Clear All**, `/ocs clear`, `/ocs clearall` or the row menu to remove records manually. Clear All asks for confirmation.

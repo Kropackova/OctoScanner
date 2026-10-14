@@ -1,19 +1,19 @@
 -- Cumulative Turtle content through 1.18.1, also used by OctoWoW.
 -- Server encounter implementations and release phases are not queried.
--- Sources and deliberate ambiguous aliases: docs/03-content.md.
+-- Sources and ambiguous aliases: docs/CONTENT.md.
 OCS.TURTLE_ADDITIONS = {
-    { "DGN", "Frostmane Hollow", { "frostmane hollow", "frostmane", "fmh", "fh" } },
-    { "DGN", "Windhorn Canyon", { "windhorn canyon", "windhorn", "whc" } },
+    { "DGN", "Frostmane Hollow", { "frostmane hollow", "frostamane hollow", "frosmane hollow", "formane hollow", "frostmane", "fmh", "fh" } },
+    { "DGN", "Windhorn Canyon", { "windhorn canyon", "windhord canyon", "windhorn caverns", "windhorn", "whc", "wch" } },
     { "DGN", "Dragonmaw Retreat", { "dragonmaw retreat", "dragonmaw", "dmr" } },
-    { "DGN", "The Crescent Grove", { "the crescent grove", "crescent grove", "cresent grove", "cs grove", "tcg", "cg" } },
-    { "DGN", "Stormwrought Ruins", { "stormwrought ruins", "stormwrought castle", "stormwrought", "stromwrought ruins", "stromwrought descent", "sw castle", "swr", "swc" } },
-    { "DGN", "Gilneas City", { "gilneas city", "gileans city", "gilneas dungeon", "gilneas", "gc" } },
-    { "DGN", "Hateforge Quarry", { "hateforge quarry", "hateforge", "hfq", "hq" } },
+    { "DGN", "The Crescent Grove", { "the crescent grove", "crescent grove", "cresent grove", "crescent grow", "crecentgrove", "cs grove", "crescent", "tcg", "cg" } },
+    { "DGN", "Stormwrought Ruins", { "stormwrought ruins", "stormwrought castle", "stormrough castle", "stormworught castle", "stormrought descent", "stormwrough", "stormwrought", "stromwrought ruins", "stromwrought descent", "sw castle", "swr", "swc" } },
+    { "DGN", "Gilneas City", { "gilneas city", "gileans city", "glineas city", "gilney city", "gilneas dungeon", "gilneas", "gc" } },
+    { "DGN", "Hateforge Quarry", { "hateforge quarry", "hatefroge quarry", "hateforgequarry", "hateforge", "htfq", "hfq", "hq" } },
     { "DGN", "Karazhan Crypt", { "karazhan crypt", "karazhan crypts", "kara crypt", "kara crypts", "crypts", "kc" } },
-    { "DGN", "Stormwind Vault", { "stormwind vault", "stormwind vaults", "sw vault", "swvault", "swv" } },
+    { "DGN", "Stormwind Vault", { "stormwind vault", "stormwind vaults", "stomrwind vault", "sw vault", "swvault", "swv" } },
     { "DGN", "Caverns of Time: Black Morass", { "caverns of time black morass", "caverns of time", "black morass", "cot bm", "cotbm", "cot" } },
-    { "RAID", "Lower Karazhan Halls", { "lower karazhan halls", "lower karazhan", "lower kara", "karazhan 10", "kara 10", "kara10", "kz10", "k10", "lkh" } },
-    { "RAID", "Upper Karazhan Halls", { "upper karazhan halls", "tower of karazhan", "karazhan tower", "upper karazhan", "upper kara", "karazhan 40", "kara 40", "kara40", "k40", "ukh" } },
+    { "RAID", "Lower Karazhan Halls", { "lower karazhan halls", "lower karazhan", "lower kara", "karazhan 10", "karazhan10", "kara 10", "kara10", "kz10", "k10", "lkh" } },
+    { "RAID", "Upper Karazhan Halls", { "upper karazhan halls", "tower of karazhan", "karazhan tower", "upper karazhan", "upper kara", "karazhan 40", "karazhan40", "kara 40", "kara40", "k40", "ukh" } },
     { "RAID", "Emerald Sanctum", { "emerald sanctum", "es hardmode", "es hard mode", "esnormal", "eshardmode", "es" } },
     { "RAID", "Timbermaw Hold", { "timbermaw hold", "timbermaw raid", "tmh" } },
     { "WB", "Concavius", { "concavius" } },
@@ -33,7 +33,7 @@ local options = {
     lft = true,
     bmDungeon = true,
     professions = {
-        { id = "JC", name = "Jewelcrafting", aliases = { "jewelcrafting", "jewelcrafter", "jeweler", "jeweller", "jewel", "jc", "jwc", "goldsmithing", "goldsmith", "gemology", "gemologist", "geomologist", "gemstone", "crafting all gems" } },
+        { id = "JC", name = "Jewelcrafting", aliases = { "jewelcrafting", "jewelcrafter", "jeweler", "jeweller", "jewel", "jc", "jwc", "goldsmithing", "goldsmith", "gold smith", "gemology", "gemologist", "geomologist", "gemo", "gemstone", "crafting all gems" } },
         { id = "SURV", name = "Survival", aliases = { "survival crafting", "survival crafter", "tent crafting", "tent crafter" } },
         { id = "GARD", name = "Gardening", aliases = { "gardening", "gardener" } },
     },

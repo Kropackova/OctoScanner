@@ -3,40 +3,40 @@ OCS = OCS or {}
 OCS.PACKS, OCS.PRETTY = {}, {}
 OCS.DEFAULT_PACK = "vanilla"
 OCS.VANILLA_CONTENT = {
-    { "DGN", "Ragefire Chasm", { "ragefire chasm", "rfc" } },
-    { "DGN", "Wailing Caverns", { "wailing caverns", "wc" } },
-    { "DGN", "The Deadmines", { "the deadmines", "deadmines", "deadmine", "dead mines", "dead mes", "dm", "vc" } },
-    { "DGN", "Shadowfang Keep", { "shadowfang keep", "shadownfang keep", "sfk" } },
-    { "DGN", "Blackfathom Deeps", { "blackfathom deeps", "blackfathom deep", "blackphantom deeps", "bfd" } },
-    { "DGN", "The Stockade", { "stormwind stockade", "the stockade", "the stockades", "stockade", "stockades", "stocks" } },
-    { "DGN", "Gnomeregan", { "gnomeregan", "gnomer" } },
+    { "DGN", "Ragefire Chasm", { "ragefire chasm", "ragefire casm", "ragefire", "rfc" } },
+    { "DGN", "Wailing Caverns", { "wailing caverns", "waling caverns", "wc" } },
+    { "DGN", "The Deadmines", { "the deadmines", "deadmines", "deadmine", "dead mines", "dead mes", "dedmines", "dm", "vc" } },
+    { "DGN", "Shadowfang Keep", { "shadowfang keep", "shadownfang keep", "shadowfnag keep", "sfk" } },
+    { "DGN", "Blackfathom Deeps", { "blackfathom deeps", "blackfathom deep", "blackphantom deeps", "blackfathom", "bfd" } },
+    { "DGN", "The Stockade", { "stormwind stockade", "the stockade", "the stockades", "stockade", "stockades", "stockaids", "stocks" } },
+    { "DGN", "Gnomeregan", { "gnomeregan", "gnomergan", "gnomer" } },
     { "DGN", "Razorfen Kraul", { "razorfen kraul", "razorfren kraul", "razorfren", "rfk" } },
-    { "DGN", "Scarlet Monastery: Graveyard", { "scarlet monastery graveyard", "sm graveyard", "sm gy", "smgy" } },
+    { "DGN", "Scarlet Monastery: Graveyard", { "scarlet monastery graveyard", "scarlet graveyard", "scarley graveyard", "sm graveyard", "sm gy", "smgy" } },
     { "DGN", "Scarlet Monastery: Library", { "scarlet monastery library", "sm library", "sm lib", "smlib" } },
     { "DGN", "Scarlet Monastery: Armory", { "scarlet monastery armory", "scarlet monastery armoury", "sm armory", "sm armoury", "sm arm", "smarm" } },
-    { "DGN", "Scarlet Monastery: Cathedral", { "scarlet monastery cathedral", "sm cathedral", "sm cath", "smcath" } },
+    { "DGN", "Scarlet Monastery: Cathedral", { "scarlet monastery cathedral", "sm cathedral", "shm cath", "sm cath", "smcath", "cath" } },
     { "DGN", "Scarlet Monastery", { "scarlet monastery", "sm" } },
     { "DGN", "Razorfen Downs", { "razorfen downs", "razorfen down", "razorfen downes", "rfd" } },
-    { "DGN", "Uldaman", { "uldaman", "ulda" } },
-    { "DGN", "Zul'Farrak", { "zul farrak", "zulfarrak", "zf" } },
+    { "DGN", "Uldaman", { "uldaman", "uldam", "ulda", "uld" } },
+    { "DGN", "Zul'Farrak", { "zul farrak", "zulfarrak", "zull farak", "zf" } },
     { "DGN", "Maraudon", { "maraudon", "maraundon", "mauradon", "mara" } },
-    { "DGN", "Sunken Temple", { "temple of atal hakkar", "sunken temple", "sunkentemple", "atal hakkar", "st" } },
+    { "DGN", "Sunken Temple", { "temple of atal hakkar", "sunken temple", "sunken tempel", "sunkentemple", "atal hakkar", "st" } },
     { "DGN", "Blackrock Depths", { "blackrock depths", "brd" } },
-    { "DGN", "Lower Blackrock Spire", { "lower blackrock spire", "lower blackrock", "lbrs" } },
+    { "DGN", "Lower Blackrock Spire", { "lower blackrock spire", "lower blackrock", "lbrds", "lbrs" } },
     { "DGN", "Upper Blackrock Spire", { "upper blackrock spire", "upper blackrock", "ubrs", "ubers", "urbs" } },
-    { "DGN", "Dire Maul: East", { "dire maul east", "dm east", "dm e", "dme", "dmeast" } },
-    { "DGN", "Dire Maul: West", { "dire maul west", "dm west", "dm w", "dmw", "dmwest" } },
-    { "DGN", "Dire Maul: North", { "dire maul north", "dm north", "dm n", "dmn", "dmnorth" } },
-    { "DGN", "Dire Maul: Tribute", { "dire maul tribute", "dm tribute", "dmt", "tribute run" } },
-    { "DGN", "Dire Maul", { "dire maul" } },
-    { "DGN", "Stratholme: Living", { "stratholme living", "strat living", "strat live", "strath live", "live strat", "strat scarlet" } },
-    { "DGN", "Stratholme: Undead", { "stratholme undead", "strat undead", "strat ud", "strath ud", "stat ud", "ud strat", "strat dead" } },
+    { "DGN", "Dire Maul: East", { "dire maul east", "diremaul east", "dm east", "dm e", "dme", "dmeast" } },
+    { "DGN", "Dire Maul: West", { "dire maul west", "diremaul west", "dm west", "dm w", "dmw", "dmwest" } },
+    { "DGN", "Dire Maul: North", { "dire maul north", "diremaul north", "dm north", "dm n", "dmn", "dmnorth" } },
+    { "DGN", "Dire Maul: Tribute", { "dire maul tribute", "diremaul tribute", "dm tribute", "dmt", "tribute run" } },
+    { "DGN", "Dire Maul", { "dire maul", "diremaul" } },
+    { "DGN", "Stratholme: Living", { "stratholme living", "strat living", "start living", "strat live", "strath live", "streath live", "live strat", "strat scarlet" } },
+    { "DGN", "Stratholme: Undead", { "stratholme undead", "strathome undead", "starthome undead", "strath undead", "strat undead", "start undead", "strat ud", "strath ud", "start ud", "stratud", "stat ud", "ud strat", "strat dead" } },
     { "DGN", "Stratholme", { "stratholme", "strat", "strath" } },
     { "DGN", "Scholomance", { "scholomance", "scolomance", "scholo" } },
     { "RAID", "Molten Core", { "molten core", "mc" } },
-    { "RAID", "Onyxia's Lair", { "onyxia s lair", "onyxias lair", "onyxia", "ony", "onyx", "oni" } },
+    { "RAID", "Onyxia's Lair", { "onyxia s lair", "onyxias lair", "onyxia", "onixia", "ony", "onyx", "oni" } },
     { "RAID", "Blackwing Lair", { "blackwing lair", "bwl" } },
-    { "RAID", "Zul'Gurub", { "zul gurub", "zulgurub", "zg" } },
+    { "RAID", "Zul'Gurub", { "zul gurub", "zulgurub", "z g", "zg" } },
     { "RAID", "Ruins of Ahn'Qiraj", { "ruins of ahn qiraj", "ruins of ahnqiraj", "aq20", "aq 20" } },
     { "RAID", "Temple of Ahn'Qiraj", { "temple of ahn qiraj", "temple of ahnqiraj", "aq40", "aq 40" } },
     { "RAID", "Naxxramas", { "naxxramas", "naxx", "nax" } },
@@ -85,12 +85,12 @@ function OCS.BuildPack(id, name, roster, options)
             targets = targets, targetIdentifies = true,
             sizeStems = kind == "RAID" and { "ony", "onyxia", "zg", "mc", "bwl" } or nil })
     end
+    table.insert(pack.activities, { id = "WB", name = "World Boss",
+        phrases = { "world boss", "world bosses", "worldboss", "worldbosses" } })
     table.insert(pack.activities, { id = "DGN", name = "Dungeon",
         words = { "dungeon", "dungeons", "blackrock spire" } })
     table.insert(pack.activities, { id = "RAID", name = "Raid",
         words = { "raid", "raids", "aq", "ahn qiraj", "ahnqiraj" } })
-    table.insert(pack.activities, { id = "WB", name = "World Boss",
-        phrases = { "world boss", "world bosses", "worldboss", "worldbosses" } })
     if options.lft then
         table.insert(pack.activities, 5, { id = "LFT", name = "Dungeon Finder",
             words = { "lft", "lfd" }, phrases = { "dungeon finder", "random dungeon" } })
@@ -100,9 +100,9 @@ function OCS.BuildPack(id, name, roster, options)
     return pack
 end
 OCS.PROFESSIONS = {
-    { id = "ALCH", name = "Alchemy", aliases = { "alchemy", "alchemist", "alch", "alchy", "transmute", "xmute", "arcanite bar cd" } },
-    { id = "BS", name = "Blacksmithing", aliases = { "blacksmithing", "blacksmith", "bs", "armorsmith", "swordsmith", "weaponsmith" } },
-    { id = "ENCH", name = "Enchanting", aliases = { "enchanting", "enchanter", "encahnter", "ench", "enchant", "enchants", "enc", "mining on gloves" } },
+    { id = "ALCH", name = "Alchemy", aliases = { "alchemy", "alchemist", "alchemists", "alch", "alchy", "transmute", "transmutes", "xmute", "arcanite trans", "arcanite bar cd" } },
+    { id = "BS", name = "Blacksmithing", aliases = { "blacksmithing", "blacksmith", "blacksmither", "blacksmiter", "bs", "armorsmith", "swordsmith", "weaponsmith" } },
+    { id = "ENCH", name = "Enchanting", aliases = { "enchanting", "enchanter", "encahnter", "enchnt", "ecnh", "ench", "enchant", "enchants", "enc", "mining on gloves" } },
     { id = "ENG", name = "Engineering", aliases = { "engineering", "engineer", "eng", "engi" } },
     { id = "HERB", name = "Herbalism", aliases = { "herbalism", "herbalist" } },
     { id = "LW", name = "Leatherworking", aliases = { "leatherworking", "leatherworker", "lw" } },
@@ -112,7 +112,7 @@ OCS.PROFESSIONS = {
     { id = "COOK", name = "Cooking", aliases = { "cooking", "cook", "chef" } },
     { id = "FISH", name = "Fishing", aliases = { "fishing", "fisherman" } },
     { id = "FA", name = "First Aid", aliases = { "first aid", "firstaid" } },
-    { id = "LOCK", name = "Lockpicking", aliases = { "lockpicking", "lock picking", "lockpick" } },
+    { id = "LOCK", name = "Lockpicking", aliases = { "lockpicking", "lock picking", "lockpick", "lockpicker", "locksmith" } },
 }
 function OCS.ParseProfession(t, headOnly)
     local lists = { OCS.PROFESSIONS, OCS.ActivePack().professions or {} }
@@ -151,7 +151,9 @@ function OCS.ParseProfession(t, headOnly)
     end
     -- A generic crafter is only a fallback after every named profession,
     -- including Turtle Survival crafting and Jewelcrafting.
-    if not headOnly and (OCS.Has(t, "crafter") or OCS.Has(t, "craftsman") or OCS.Has(t, "lfw")) then
+    if not headOnly and (OCS.Has(t, "crafter") or OCS.Has(t, "craftsman") or OCS.Has(t, "lfw")
+        or OCS.Has(t, "crafting") or OCS.Has(t, "craft me") or OCS.Has(t, "able to craft")
+        or OCS.Has(t, "anyone craft") or OCS.Has(t, "any1 craft")) then
         return "Crafting", OCS.TradeIntent and OCS.TradeIntent(t) == "WTS" and "offering" or "looking"
     end
 end

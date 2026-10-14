@@ -31,6 +31,9 @@ function OCS.Normalize(raw)
 	t = string.gsub(t, "|h", " ")
 	t = string.gsub(t, "|T.-|t", "")
 	t = string.lower(t)
+	t = string.gsub(t, "n't", "nt")
+	t = string.gsub(t, "n’t", "nt")
+	t = string.gsub(t, "(%a)'d(%W)", "%1d%2")
 	-- Clock times must not become character levels or the ST dungeon alias.
 	t = " " .. t .. " "
 	for _, zone in ipairs({ "st", "cet", "cest", "est", "edt", "gmt", "utc", "msk" }) do
@@ -50,12 +53,20 @@ function OCS.Normalize(raw)
 	t = string.gsub(t, "(%d)%s*/%s*(%d)", "%1by%2")
 	t = string.gsub(t, ">", " gt ")
 	t = string.gsub(t, "<", " lt ")
-	t = string.gsub(t, "%+%s*(%d)", " plus%1 ")
+	t = string.gsub(t, "(%d+)%s*%+", function(n)
+		local level = tonumber(n)
+		if level >= 10 and level <= 60 then return " minlevel" .. n .. " " end
+		return n .. "+"
+	end)
+	t = string.gsub(t, "%+%s*(%d+)(%a*)", " plus%1%2 ")
 	t = string.gsub(t, "(%a)%+", "%1 plus ")
 	t = string.gsub(t, "%+", " ")
 	t = string.gsub(t, "[/\\,%.!%?%(%)%[%]{}:;\"'%*%%=|~#&@`^]", " ")
 	t = string.gsub(t, "_", " ")
 	t = string.gsub(t, "%-%-(%a)", " %1")
+	-- Keep numeric level ranges, but treat word hyphens as separators.
+	t = string.gsub(t, "(%a)%-", "%1 ")
+	t = string.gsub(t, "%-(%a)", " %1")
 	t = string.gsub(t, "%s+", " ")
 	t = string.gsub(t, " clock st ", " clock ")
 	return " " .. trim(t) .. " "
@@ -199,6 +210,17 @@ function OCS.MarkSize(t)
 			return " " .. stem .. " size" .. n .. " "
 		end)
 	end
+	-- Keep numbered Karazhan aliases intact for matching, but hide their
+	-- group size from the character-level parser.
+	if pack and pack.bmDungeon then
+		for _, stem in ipairs({ "kara", "karazhan" }) do
+			for _, n in ipairs({ 10, 40 }) do
+				local alias = stem .. n
+				t = string.gsub(t, " " .. stem .. " " .. n .. " ", " " .. alias .. " ")
+				if has(t, alias) then keep(n) end
+			end
+		end
+	end
 	t = string.gsub(t, " (%d+) ?man ", function(n)
 		keep(n)
 		return " size" .. n .. " man "
@@ -222,7 +244,7 @@ local ROLE_WORDS = {
 	},
 	heal = {
 		"heal", "heals", "healz", "healer", "healers", "healor", "healing",
-		"healler", "healo", "resto", "rdruid", "rsham", "holy", "hpal",
+		"healler", "heall", "helaer", "healo", "resto", "rdruid", "rsham", "holy", "hpal",
 		"hpala", "hpriest", "disc", "tree", "healadin", "hps", "h",
 	},
 	damage = {
@@ -231,7 +253,7 @@ local ROLE_WORDS = {
 		"fury", "ret", "feral", "cat", "boomkin", "moonkin", "boomy", "ele",
 		"enh", "shadow", "sp", "spriest", "destro", "affli", "affly", "demo",
 		"arcane", "fire", "frost", "combat", "sub", "assa", "mm", "bm",
-		"surv", "mage", "lock", "warlock", "rogue", "hunter",
+		"surv", "mage", "mages", "lock", "locks", "wl", "warlock", "warlocks", "rogue", "rogues", "hunter", "hunters", "enhance", "enhancer", "dpsh", "warriordps",
 		"hunt", "d",
 	},
 }
@@ -295,11 +317,19 @@ end
 
 -- Returns the role a single word stands for, or nil.
 local function roleAt(word)
+	word = string.gsub(word, "^plus(%d)", "%1")
 	local role = ROLE_WORD_MAP[word]
 	if role then
 		return role
 	end
-	local rest = OCS.Match(word, "^%d+(%a+)$") or OCS.Match(word, "^%d+%-%d+(%a+)$")
+	local have, total, counted = OCS.Match(word, "^(%d+)by(%d+)(%a+)$")
+	if counted and ROLE_WORD_MAP[counted] and tonumber(total) > 0 and tonumber(have) <= tonumber(total) then
+		return ROLE_WORD_MAP[counted], tonumber(have) == tonumber(total)
+	end
+	local suffix = OCS.Match(word, "^(%a+)%d+$")
+	if suffix and string.len(suffix) == 1 then suffix = nil end
+	local rest = OCS.Match(word, "^%d+x?(%a+)$") or OCS.Match(word, "^%d+%-%d+x?(%a+)$")
+		or suffix or OCS.Match(word, "^lf%d+x?(%a+)$")
 	if rest and ROLE_WORD_MAP[rest] then
 		return ROLE_WORD_MAP[rest]
 	end
@@ -329,7 +359,7 @@ local CLASS_PHRASES = {
 -- it is a word, and "mag" is left out because it is Magtheridon.
 local CLASS_WORDS = {
 	warrior = "Warrior", warriors = "Warrior", warr = "Warrior",
-	warri = "Warrior", warrs = "Warrior",
+	warri = "Warrior", warrs = "Warrior", warriordps = "Warrior",
 	paladin = "Paladin", paladins = "Paladin", pala = "Paladin",
 	pally = "Paladin", pallies = "Paladin", hpala = "Paladin",
 	hpal = "Paladin", retri = "Paladin",
@@ -350,6 +380,11 @@ local CLASS_WORDS = {
 -- Returns the text for the cell and the set the class filter reads. A post
 -- naming more than two classes is a recruitment list, so the cell says so
 -- rather than growing sideways.
+local function classAt(word)
+	word = string.gsub(word, "^plus(%d)", "%1")
+	return CLASS_WORDS[word] or CLASS_WORDS[OCS.Match(word, "^%d+x?(%a+)$") or ""]
+end
+
 function OCS.ParseClass(t)
 	local seen, out = {}, {}
 	local excluded, negative = {}, false
@@ -357,10 +392,10 @@ function OCS.ParseClass(t)
 	for i = 1, OCS.Len(list) do
 		local w = list[i]
 		if w == "no" or (w == "full" and (list[i + 1] == "on"
-			or CLASS_WORDS[list[i + 1]] or list[i + 1] == "war")) then
+			or classAt(list[i + 1] or "") or list[i + 1] == "war")) then
 			negative = true
-		elseif negative and CLASS_WORDS[w] then
-			excluded[CLASS_WORDS[w]] = true
+		elseif negative and classAt(w) then
+			excluded[classAt(w)] = true
 		elseif negative and w == "war" then
 			excluded.Warrior = true
 		elseif w ~= "on" and w ~= "and" and w ~= "or" then
@@ -375,7 +410,7 @@ function OCS.ParseClass(t)
 		end
 	end
 	for _, w in ipairs(words(t)) do
-		local name = CLASS_WORDS[w]
+		local name = classAt(w)
 		if name and not seen[name] and not excluded[name] then
 			seen[name] = true
 			table.insert(out, name)
@@ -392,24 +427,55 @@ end
 
 function OCS.ParseRoles(t)
 	local set = {}
+	local list, ignored, full = words(t), {}, {}
+	for i = 1, OCS.Len(list) do
+		local w = list[i]
+		local after
+		if w == "no" or w == "not" then after = i + 1 end
+		if w == "full" and list[i + 1] == "on" then after = i + 2 end
+		local negativeNeed = (w == "don" and list[i + 1] == "t" and list[i + 2] == "need")
+			or (w == "dont" and list[i + 1] == "need")
+			or (w == "do" and list[i + 1] == "not" and list[i + 2] == "need")
+		if negativeNeed then
+			after = i + ((w == "dont") and 2 or 3)
+			-- "tank/healer don't need sand" describes existing members.
+			if not roleAt(list[after] or "") then
+				local j = i - 1
+				while j > 0 and (roleAt(list[j]) or list[j] == "and" or list[j] == "or") do
+					ignored[j] = true; j = j - 1
+				end
+			end
+		end
+		if after then
+			local j = after
+			while j <= OCS.Len(list) and (roleAt(list[j]) or list[j] == "and" or list[j] == "or") do
+				ignored[j] = true; j = j + 1
+			end
+		end
+		local have, total = OCS.Match(w, "^(%d+)by(%d+)$")
+		if have and tonumber(total) > 0 and tonumber(have) <= tonumber(total) then
+			local role = roleAt(list[i + 1] or "")
+			if role then
+				ignored[i + 1] = true
+				if tonumber(have) < tonumber(total) then set[role] = true else full[role] = true end
+			end
+		end
+	end
+	local clean = {}
+	for i = 1, OCS.Len(list) do if not ignored[i] then table.insert(clean, list[i]) end end
+	t = " " .. table.concat(clean, " ") .. " "
 	for i = 1, OCS.Len(ROLE_PHRASES) do
 		if has(t, ROLE_PHRASES[i][1]) then
 			set[ROLE_PHRASES[i][2]] = true
 		end
 	end
 	for _, w in ipairs(words(t)) do
-		local role = ROLE_WORD_MAP[w]
+		local role, filled = roleAt(w)
 		if role then
-			set[role] = true
-		else
-			local rest = OCS.Match(w, "^%d+(%a+)$") or OCS.Match(w, "^%d+%-%d+(%a+)$")
-			if rest and ROLE_WORD_MAP[rest] then
-				set[ROLE_WORD_MAP[rest]] = true
-			elseif OCS.Match(w, "^%d[thd]") and string.gsub(w, "%d[thd]", "") == "" then
-				for _, letter in string.gfind(w, "(%d)([thd])") do
-					set[COMPACT[letter]] = true
-				end
-			end
+			if role == "compact" then
+				for _, letter in string.gfind(w, "(%d)([thd])") do set[COMPACT[letter]] = true end
+			elseif filled then full[role] = true
+			else set[role] = true end
 		end
 	end
 	for i = 1, OCS.Len(ANY_ROLE_PHRASES) do
@@ -418,6 +484,7 @@ function OCS.ParseRoles(t)
 			set.any = true
 		end
 	end
+	for role in pairs(full) do set[role] = nil; set.any = nil; set.full = true end
 	return set
 end
 
@@ -500,13 +567,13 @@ local SELF_ADS = {
 }
 
 local function lfKindOf(w)
-	if w == "lfm" or w == "lfmore" or OCS.Match(w, "^lfm%d+$") or OCS.Match(w, "^lf%d+m$") then
+	if w == "lfm" or w == "lfms" or w == "lfmore" or OCS.Match(w, "^lfm%d+$") or OCS.Match(w, "^lf%d+m$") then
 		return "lfm"
 	end
-	if w == "lfg" or w == "lg" or w == "lgf" or OCS.Match(w, "^lfg%d*$") then
+	if w == "lfg" or w == "lfr" or w == "lg" or w == "lgf" or OCS.Match(w, "^lfg%d*$") then
 		return "lfg"
 	end
-	if w == "lf" or OCS.Match(w, "^lf%d+$") then
+	if w == "lf" or OCS.Match(w, "^lf%d+$") or OCS.Match(w, "^lf%d+%a+$") then
 		return "lf"
 	end
 	if w == "looking" or w == "searching" or w == "seeking" or w == "search" then
@@ -528,6 +595,7 @@ end
 
 local GUILD_NOUNS = { "guild", "guilds", "guilde", "gilde", "guilda", "gildia" }
 local GUILD_ACTIONS = { "recruiting", "recruitment", "recruit", "recruits", "recrute", "recluta", "rekrutuje", "rekrutiert", "sucht", "gesucht", "shucht",
+	"lf people", "lf for people", "lf players", "looking for new members",
 	"recrutement", "buscamos", "join",
 	"rebuilding", "join us", "join for", "hledame", "otevira brany",
 	"speaking players", "välkomna", "häng med", "te esperamos", "ishet", "nabiraet" }
@@ -561,7 +629,7 @@ function OCS.IsGuildAdvert(t, raw)
 	end
 	-- A named guild can advertise a roster without spelling out "guild".
 	if named then
-		return hasAny(t, GUILD_ACTIONS) or hasAny(t, { "lf raiders", "looking for more", "looking for players", "raid times" })
+		return hasAny(t, GUILD_ACTIONS) or hasAny(t, { "lf raiders", "looking for more", "looking for players", "looking for new members", "raid times" })
 	end
 	-- Some roster adverts use a guild name in prose, then recurring raid
 	-- nights and a class list. A dated PUG alone does not satisfy this.
@@ -599,6 +667,9 @@ local function lfObjectIsGroup(list, at)
 		local w = list[i]
 		if OCS.Match(w, "^size%d+$") or OBJECT_FILLERS[w] then
 			-- Skip and keep reading.
+		elseif w == "bm" and OCS.ActivePack().bmDungeon
+			and not hasAny(" " .. table.concat(list, " ") .. " ", { "hunter", "hunters", "spec", "pet", "beast mastery" }) then
+			return true
 		elseif roleAt(w) then
 			return false
 		elseif OCS.Match(w, "^%d+$") then
@@ -620,13 +691,16 @@ function OCS.RecruitCount(t)
 		or OCS.Match(t, " need ?(%d+) ") or OCS.Match(t, " (%d+) more ")
 		or OCS.Match(t, " (%d+) spot ") or OCS.Match(t, " (%d+) spots ")
 		or OCS.Match(t, " want (%d+) ") or OCS.Match(t, " looking for (%d+) ")
+		or OCS.Match(t, " lf(%d+)%a+ ")
 	if explicit then
-		return tonumber(explicit)
+		local count = tonumber(explicit)
+		if count and count >= 1 and count <= 40 then return count end
+		return nil
 	end
 	local loose = OCS.Match(t, " lf ?(%d+) ")
 	if loose then
 		local v = tonumber(loose)
-		if v and v <= 9 then
+		if v and v >= 1 and v <= 9 then
 			return v
 		end
 	end
@@ -646,6 +720,7 @@ function OCS.TradeIntent(t)
 	if head == "wts" or head == "sell" or head == "selling" then return "WTS" end
 	if head == "wtb" or head == "wtt" or head == "buy" or head == "buying" then return "WTB" end
 	if has(t, "lfw") or has(t, "looking for work") then return "WTS" end
+	if hasAny(t, { "craft me", "able to craft", "anyone craft", "any1 craft" }) then return "WTB" end
 	if has(t, "lf") or has(t, "looking for") or has(t, "anyone selling")
 		or (OCS.GroupRequest(t) == "lfm" and has(t, "crafter")) then return "WTB" end
 	for i = 1, OCS.Len(WTS_WORDS) do
@@ -674,7 +749,7 @@ function OCS.Classify(t)
 	local before, after = {}, {}
 	local countBefore, countAfter = 0, 0
 	for i = 1, OCS.Len(list) do
-		local role = roleAt(list[i])
+		local role = roleAt(list[i]) or classAt(list[i])
 		if role then
 			if firstLF and i > firstLF then
 				if not after[role] then
@@ -725,6 +800,7 @@ function OCS.Classify(t)
 
 	-- 4. Bare lf: what the token points at wins, then role position.
 	if kind == "lf" then
+		if countAfter > 0 and string.find(t, "%d+by%d+") then return "LFM" end
 		-- "lf brd", "lf brd dps", "lf group", "searching for brd": the sender
 		-- wants the group, so a role afterwards describes the sender.
 		if lfObjectIsGroup(list, firstLF) then
@@ -739,9 +815,6 @@ function OCS.Classify(t)
 		if countAfter == 1 then
 			if leader then
 				return "LFM"
-			end
-			if selfAd or countBefore > 0 then
-				return "LFG"
 			end
 			return "LFM"
 		end
@@ -787,6 +860,7 @@ function OCS.SetLevelCap(value)
 end
 
 local LEVEL_PATTERNS = {
+	" minlevel(%d+) ", " lvl (%d+)min ", " lvl(%d+)min ",
 	" lvl (%d+) ", " lvl(%d+) ", " lv (%d+) ", " lv(%d+) ",
 	" level (%d+) ", " level(%d+) ", " (%d+) lvl ", " (%d+)lvl ",
 	" (%d+) lv ", " (%d+)lv ", " l(%d+) ",
@@ -895,7 +969,8 @@ function OCS.MatchActivity(t)
 	end
 	-- An Emperor run without the BRD acronym. Only interpret it in a group
 	-- request; the word emperor by itself is not enough.
-	if OCS.GroupRequest(t) and hasAny(t, { "emp runs", "emp run", "emp jump run", "emp lava jump run", "emperor" }) then
+	if (OCS.GroupRequest(t) or hasAny(t, { "lf", "need", "looking for" }))
+		and hasAny(t, { "emp runs", "emp run", "emp jump run", "emp lava jump run", "emperor", "lava run" }) then
 		return "DGN", "Dungeon", "Dungeon", "brd"
 	end
 	if OCS.GroupRequest(t) and has(t, "gnome") then return "DGN", "Dungeon", "Dungeon", "gnomeregan" end
@@ -1003,7 +1078,7 @@ local PVP_OTHER = {
 }
 local QUEUE_WORDS = { "queue", "que", "queu", "q", "join", "join up", "sign", "reg", "more for", "come av", "come wsg" }
 -- Weak pvp words only count when the line also wants people.
-local PVP_WEAK = { "honor", "rating", "cap", "partner", "teammates" }
+local PVP_WEAK = { "honor", "rating", "cap" }
 
 function OCS.MatchPvP(t)
 	local entries = OCS.ActivePack().pvp or {}
@@ -1047,7 +1122,7 @@ local GOODS = {
 		"vest", "hood", "helm", "crown", "shoulders", "pauldrons", "bracers",
 		"gauntlets", "gloves", "belt", "girdle", "leggings", "pants", "boots",
 		"treads", "ring of", "band", "pendant", "necklace", "amulet", "wings",
-		"attire", "armor", "armour", "gemstone" } },
+		"attire", "armor", "armour", "gemstone", "rucksack", "satchel", "backpack", "bag", "fishing rod" } },
 }
 
 -- What a trade line is about. Only used when nothing more precise matched.
@@ -1091,6 +1166,8 @@ local GROUP_PROOF = { "lfm", "lfg", "lf inv", "need tank", "need tanks",
 function OCS.IsSpam(raw, t)
 	-- A line that proves it is a real advert is never spam, whatever else it
 	-- says.
+	local head = OCS.Match(t, "^%s*(%S+)")
+	if head == "wts" or head == "wtb" or head == "wtt" or has(t, "lfw") then return false end
 	if hasAny(t, GROUP_PROOF) or OCS.RecruitCount(t)
 		or (OCS.Classify(t) == "LFM" and hasAny(t, { "lf", "looking for", "need" })) then
 		return false
@@ -1110,7 +1187,9 @@ end
 local META_CHAT = { "why spam", "go lfg", "join lfg", "guild recruitment channel", "command to join pvp", "refuse to join a guild",
 	"guild-recruitment channel", "can we make that the channel", "need to read quest text",
 	"delete your wdb", "those of you selling", "world is buying phones",
-	"buying diesel", "ai selling", "for gardening you simply" }
+	"buying diesel", "ai selling", "for gardening you simply", "what happened to", "what if they",
+	"cant afford a house", "lfg chat", "lfg channel", "world chat is for", "people lfg saying",
+	"every guild ad", "how many quests", "are there any alliance quests", "selling cars", "ai companies", "pvp nerfs" }
 
 local questVocabulary
 local function questContext(raw, t)
@@ -1156,13 +1235,22 @@ local function groupSignal(t)
 		or string.find(t, "%d+by%d+")
 end
 
+local function withoutItems(raw)
+	local text = string.gsub(raw, "|Hitem:[^|]+|h%[[^%]]*%]|h", " ")
+	return (string.gsub(text, "{[Cc][Ll][Ii][Nn][Kk]:[^}]+}", " "))
+end
+
 function OCS.Parse(raw)
 	local t = OCS.Normalize(raw)
 	if OCS.IsAddonTraffic(raw) or OCS.IsAddonAdvert(raw) then
 		return nil, t
 	end
 	if hasAny(t, META_CHAT) then return nil, t end
-	local quest, detail = questContext(raw, t)
+	if not OCS.GroupRequest(t) and hasAny(t, { "dont join", "do not join", "dont queue", "do not queue", "how can i join" }) then return nil, t end
+	if string.find(t, "^ does ") and hasAny(t, { "attune", "attunement" })
+		and not OCS.GroupRequest(t) and not hasAny(t, { "lf", "anyone" }) then return nil, t end
+	local itemFree = OCS.Normalize(withoutItems(raw))
+	local quest, detail = questContext(raw, itemFree)
 	if has(t, "buff may drop soon") and has(t, "might end soon") and not OCS.GroupRequest(t) then return nil, t end
 	local guildAdvert = OCS.IsGuildAdvert(t, raw)
 	if OCS.IsSpam(raw, t) and not guildAdvert then
@@ -1171,7 +1259,14 @@ function OCS.Parse(raw)
 	local size
 	t, size = OCS.MarkSize(t)
 	detail = OCS.MarkSize(detail)
-	local actId, actName, actShort, target = OCS.MatchActivity(t)
+	-- Linked quest titles may contain dungeon/raid names. Only the text
+	-- outside those links can name a separate instance.
+	local activityText = string.find(raw, "|Hquest:", 1, true) and detail or OCS.MarkSize(itemFree)
+	local actId, actName, actShort, target = OCS.MatchActivity(activityText)
+	if quest and string.find(raw, "|Hquest:", 1, true)
+		and hasAny(detail, { "attune", "attunement", "preq", "prequest", "chain" }) then
+		actId, actName, actShort, target = nil, nil, nil, nil
+	end
 	if guildAdvert then actId, actName, actShort, target = "GUILD", "Guild", "Guild", nil end
 	if OCS.PrettyName(target) == "Caverns of Time: Black Morass" then
 		-- Here BM names the instance, rather than a requested Damage spec.
@@ -1183,6 +1278,20 @@ function OCS.Parse(raw)
 	local tradeHead = head == "wts" or head == "wtb" or head == "wtt"
 		or head == "sell" or head == "selling" or head == "buy" or head == "buying" or head == "lfw"
 	if (head == "sell" or head == "buy") and not OCS.MatchGoods(t) then tradeHead = false end
+	local itemLink = string.find(raw, "|Hitem:", 1, true) or string.find(string.lower(raw), "{clink:", 1, true)
+	local linkedQuest = string.find(raw, "|Hquest:", 1, true)
+	local buyRequest = not linkedQuest and not OCS.GroupRequest(detail) and OCS.TradeIntent(t) == "WTB"
+		and (head == "buy" or head == "buying" or head == "need"
+			or hasAny(t, { "lf", "looking for", "wtb", "wtt", "anyone selling", "want buy", "want to buy" }))
+	local professionText = itemFree
+	local ownMaterials = hasAny(t, { "my mats", "have mats", "got mats" })
+	local lockRequest = buyRequest and has(t, "rogue") and hasAny(t, { "open", "lockbox", "lockboxes", "boxes" })
+	local object = OCS.Match(detail, "^%s*lf%s+(%S+)") or OCS.Match(detail, "^%s*lf%d+(%a+)")
+	local explicitTransport = hasAny(t, { "to sum", "to summon", "warlock summon", "mage portal", "mage for portal" })
+	local groupRecruitment = object and roleAt(object) and not lockRequest
+		and not explicitTransport
+	if groupRecruitment then buyRequest = false end
+	if buyRequest and (OCS.MatchGoods(t) or itemLink) and not actId then tradeHead = true end
 	local offerProfession = OCS.ParseProfession(t, true)
 	if guildAdvert or OCS.GroupRequest(t) or OCS.TradeIntent(t) == "WTB" or not hasAny(t, {
 		"lfw", "your mats", "all gems", "can craft", "looking for work", "offering", "for sale", "available", "here", "pst", "donations",
@@ -1190,10 +1299,14 @@ function OCS.Parse(raw)
 	if offerProfession then tradeHead = true end
 	-- Transport offers often list instances as destinations without WTS.
 	local price = string.find(t, " %d+ ?g ") or string.find(t, " %d+ ?gold ")
-	local transport = not OCS.GroupRequest(detail) and (
-		(hasAny(t, { "summon", "summons", "summoning", "portal", "portals" })
+	local transportWords = hasAny(t, { "summon", "summons", "summoning", "portal", "portals", "summ", "sum", "port", "taxi" })
+	local transport = not linkedQuest and not groupRecruitment and not OCS.GroupRequest(detail) and (
+		(transportWords
 			and (string.find(string.lower(raw), "summons:", 1, true)
-				or price or hasAny(t, { "will pay", "paying" })))
+				or price or hasAny(t, { "will pay", "paying" })
+				or (buyRequest and head ~= "need" and (not actId or explicitTransport
+					or (object and hasAny(" " .. object .. " ", { "sum", "summ", "summon", "summons", "portal", "port", "taxi" })))
+					and not hasAny(t, { "can summon", "can summ", "can sum", "summ available", "summs available", "summon lords" }))))
 		or (price and hasAny(t, { "taxi", "t a x i" }))
 		or (hasAny(t, { "ubrs", "ubers" }) and has(t, "key")
 			and hasAny(t, { "service", "will pay" })))
@@ -1205,7 +1318,8 @@ function OCS.Parse(raw)
 	-- PvP. No activity matched, so arenas and battlegrounds get their say
 	-- before professions and trade do.
 	local route, subBucket
-	if not actId and not tradeHead then
+	local questRecruitment = linkedQuest or (hasAny(t, { "elite", "elites", "elite quests" }) and groupSignal(detail))
+	if not actId and not tradeHead and not questRecruitment then
 		subBucket, target = OCS.MatchPvP(t)
 		if subBucket then
 			route = "PVP"
@@ -1233,15 +1347,18 @@ function OCS.Parse(raw)
 	end
 	if not actId and not route and tradeHead and head ~= "lfw" then
 		local goodsId, goodsName = OCS.MatchGoods(t)
-		local materialService = goodsId == "GEAR" and OCS.TradeIntent(t) == "WTB"
-			and hasAny(t, { "my mats", "have mats" })
-		if not materialService and (goodsId == "RECIPE" or goodsId == "CONSUM"
-			or (goodsId and (string.find(raw, "|Hitem:", 1, true) or string.find(string.lower(raw), "{clink:", 1, true)))) then
+		local materialService = buyRequest and (ownMaterials or lockRequest or OCS.ParseProfession(professionText))
+		if not materialService and (goodsId == "RECIPE" or goodsId == "CONSUM" or (goodsId and itemLink)) then
 			route, subBucket, actName, actShort = "TRADE", goodsId, goodsName, goodsName
+		elseif buyRequest and (goodsId or itemLink) and not materialService then
+			route, subBucket = "TRADE", "TRADE_UNSURE"
 		end
 	end
 	if not actId and not route then
-		profession, profMode = OCS.ParseProfession(t)
+		if lockRequest then
+			profession, profMode = "Lockpicking", "looking"
+		end
+		if not profession then profession, profMode = OCS.ParseProfession(t) end
 		if profession then
 			route = "TRADE"
 			subBucket = "PROF"
@@ -1257,15 +1374,20 @@ function OCS.Parse(raw)
 	end
 
 	if not actId and not route then
-        local roles = OCS.ParseRoles(t)
-        local classes = OCS.ParseClass(t)
+        local roles = OCS.ParseRoles(detail)
+        local classes = OCS.ParseClass(detail)
         local request = OCS.GroupRequest(t)
-        local questWords = hasAny(t, { "quest", "quests", "elite", "elites", "qs", "exlite" })
-            and (request or hasAny(t, { "lf", "need", "looking for" }))
+        local roleObject = object or OCS.Match(detail, "^%s*need%s+(%S+)")
+            or OCS.Match(detail, "^%s*looking for%s+(%S+)")
+        local directRequest = (roleObject and (roleAt(roleObject) or CLASS_WORDS[roleObject]))
+            or (roleAt(OCS.Match(detail, "^%s*(%S+)") or "") and has(detail, "lf"))
+        local questWords = hasAny(itemFree, { "quest", "quests", "elite", "elites", "qs", "exlite" })
+            and groupSignal(detail)
         if (request and OCS.Len(words(t)) > 1)
             or ((next(roles) or classes) and OCS.RecruitCount(t))
-            or (quest and (hasAny(t, { "lf", "looking for more", "anyone need" })
-                or (next(roles) and OCS.Classify(t) == "LFM"))) or questWords then
+            or (next(roles) and OCS.Classify(t) == "LFM" and directRequest)
+            or (has(detail, "lf") and hasAny(itemFree, { "mirage race", "mirage raceway" }))
+            or (quest and (groupSignal(detail) or hasAny(detail, { "can help", "join" }))) or questWords then
             actId, actName, actShort = "OTHER", "Group", "Group"
             if quest or questWords then actName, actShort, target = "Quest group", "Quest", quest end
         else
@@ -1363,7 +1485,7 @@ function OCS.Parse(raw)
 	elseif route == "TRADE" then
 		if not tradeHead and not offerProfession and not transport and not OCS.GroupRequest(detail)
 			and not anyRequest and not (profession and string.find(t, "^ any "))
-			and not hasAny(t, { "wts", "wtb", "wtt", "lfw", "lf", "looking for", "can craft", "your mats", "offering", "selling", "buying", "buy", "paying", "donations", "available", "need", "free", "pst" }) then return nil, t end
+			and not hasAny(t, { "wts", "wtb", "wtt", "lfw", "lf", "looking for", "can craft", "craft me", "able to craft", "anyone craft", "any1 craft", "your mats", "offering", "selling", "buying", "buy", "paying", "donations", "available", "need", "free", "pst" }) then return nil, t end
 	elseif not guildAdvert and not groupSignal(detail) and not anyRequest and not queryRequest then
 		local compact = OCS.Len(words(t)) <= 3 and target
 		local selfRole = next(OCS.ParseRoles(detail)) and OCS.Len(words(t)) <= 7
@@ -1414,13 +1536,21 @@ function OCS.Parse(raw)
 	end
 
 	local count = OCS.RecruitCount(detail)
-	local level, bracket = OCS.ParseLevel(detail, count ~= nil)
-	local roleSet = OCS.ParseRoles(detail)
+	local levelDetail = string.gsub(detail, " age minlevel%d+ ", " age ")
+	levelDetail = string.gsub(levelDetail, " minlevel%d+ online ", " online ")
+	if route == "TRADE" then levelDetail = string.gsub(levelDetail, " minlevel%d+ ", " ") end
+	local level, bracket = OCS.ParseLevel(levelDetail, count ~= nil)
+	local roleDetail = detail
+	if intent == "LFM" then
+		local recruitment = OCS.Match(detail, " (lf%d+%a* .*)$") or OCS.Match(detail, " (lf .*)$")
+		if recruitment and next(OCS.ParseRoles(" " .. recruitment)) then roleDetail = " " .. recruitment end
+	end
+	local roleSet = OCS.ParseRoles(roleDetail)
 	if intent == "LFM" and route ~= "TRADE" and not next(roleSet) then
 		roleSet.tank, roleSet.heal, roleSet.damage = true, true, true
 		roleSet.any = true
 	end
-	local classText, classSet = OCS.ParseClass(detail)
+	local classText, classSet = OCS.ParseClass(roleDetail)
 	local prog, progSize = OCS.ParseProgress(t)
 	local levelling = OCS.ParseLevelling(t)
 	if not levelling and route ~= "TRADE" and OCS.ParseBoost(t) then

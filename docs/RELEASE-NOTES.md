@@ -9,6 +9,8 @@ OctoScanner reads adverts in your joined chat channels and organizes them into P
 - `DM` / `VC` for The Deadmines, with separate aliases for Dire Maul wings and Tribute. Contact instructions such as `DM me` do not name an activity.
 - Per-section filters and column choices. PvE defaults hide Class, Filled and Lvl; PvP defaults hide Role and Lvl. All remain available through Rows.
 - Repeat adverts update the same player's row, including moves between tabs while retaining manual cell edits.
+- Role counts such as `3xDPS` and `heal1`, available slots in `2/2 tanks 1/3 healers 5/5 DPS`, and minimum levels such as `53+`.
+- Quest and item links keep their titles separate from activity, role, class and level detection. Crafting, lockpicking and summon requests use the Trade section.
 - Records remain throughout the current session. Reload restores only records younger than one hour.
 - Filtered sound/chat/popup alerts and a resizable mini feed with one-click whisper.
 - Seven editable whisper templates with placeholders for your own character's name, class and level.

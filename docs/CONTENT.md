@@ -33,8 +33,10 @@ New bosses inside an existing dungeon do not need a separate activity category. 
 - `BM` in group recruitment means Black Morass unless Hunter, pet or spec wording indicates Beast Mastery. It is then excluded from Damage role detection.
 - `Kara10` / `K10` / `LKH` and `Kara40` / `K40` / `UKH` distinguish the raids. Plain `Kara` stays an unspecified raid.
 - Bare `DM` means The Deadmines, as does `VC`. Dire Maul uses its full name or a wing: `DME` / `DM East`, `DMW` / `DM West`, `DMN` / `DM North`, or `DMT` / `DM Tribute`. Contact phrases such as `DM me` do not name a dungeon.
+- `Blackfathom` identifies Blackfathom Deeps, and `Crescent` identifies The Crescent Grove in the Octo/Turtle profiles. Hyphens in names such as `DM-West` and `Kara-10` are accepted.
 - `HC` alone establishes neither dungeon difficulty nor a character's hardcore status. Emerald Sanctum mode requires explicit Normal/Hard Mode wording.
 - Recognized quest links and plain-text repeats can produce Quest groups. Title words such as Shadow, Hunter or Wanted are not roles, classes or wanted counts. The observed title list is not a complete quest database.
+- Role counts such as `3xDPS`, `1xHeal` and `heal1` are recognized. A full role in a roster such as `2/2 tanks 1/3 healers 5/5 DPS` is excluded from the requested roles. Raid sizes and loot item titles are not character levels or roles.
 - A post listing several activities currently chooses one matching activity. Unrecognized requests remain general Group entries.
 
 Spelling variants are based on observed Octo adverts, including `URBS`, `Ubers`, `Scolomance`, `Stat UD`, `ONI`, `mauradon`, `Razorfren`, `gileans city` and `BLACKPHANTOM DEEPS`. New slang can be added with an anonymized message and regression.

@@ -55,7 +55,7 @@ for path in sorted((ROOT / 'docs' / 'screenshots').glob('*')):
     if path.is_file() and path.suffix.lower() in ('.png', '.jpg', '.jpeg', '.webp'):
         add('docs/screenshots/' + path.name, path)
 for name in ('run.lua', 'reload.lua', 'history.lua', 'feedback.lua', 'scale.lua', 'ui-scale.lua', 'corpus.lua',
-             'corpus-third.lua', 'corpus-fourth.lua', 'wow_mock.lua'):
+             'corpus-third.lua', 'corpus-fourth.lua', 'corpus-fifth.lua', 'wow_mock.lua'):
     add('tests/' + name, ROOT / 'tests' / name, rewrite_test=True)
 entries['.gitignore'] = b'''dist/
 .tooling/

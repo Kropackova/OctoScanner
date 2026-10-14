@@ -742,6 +742,7 @@ function OCS.MoveRow(bucket, name, target)
 	for i = OCS.Len(from), 1, -1 do
 		if from[i].name == name then
 			local row = table.remove(from, i)
+			row.manualBucket = target
 			for j = OCS.Len(to), 1, -1 do
 				if to[j].name == name then
 					table.remove(to, j)
@@ -1149,7 +1150,7 @@ local function safeText(s)
 	return (string.gsub(tostring(s), "|", ""))
 end
 
-OCS.ROW_SCHEMA = 6
+OCS.ROW_SCHEMA = 7
 
 -- Guild recruitment used to sit in the PvE and PvP tabs. It has its own section
 -- now, so stored guild rows are carried across once instead of being stranded
@@ -1185,40 +1186,58 @@ function OCS.MigrateRows()
 		return 0
 	end
 	local done = moveGuildRows()
+	local moves = {}
 	for i = 1, OCS.Len(OCS.BUCKETS) do
-		local list = OCS_DB.rows[OCS.BUCKETS[i]] or {}
-		for j = 1, OCS.Len(list) do
+		local bucket = OCS.BUCKETS[i]
+		local list = OCS_DB.rows[bucket] or {}
+		for j = OCS.Len(list), 1, -1 do
 			local row = list[j]
 			if row.schema ~= OCS.ROW_SCHEMA then
 				local text = row.rawMessage or row.message
-				local parsed
-				if text then
+				local parsed, rejected
+				if type(text) == "string" and text ~= "" then
 					local ok, out = pcall(OCS.Parse, text)
 					if ok and type(out) == "table" then
 						parsed = out
+					elseif ok and out == nil then
+						rejected = true
 					end
 				end
 				if parsed then
 					local locked = row.locked or {}
 
-					row.target = row.target or parsed.target
-
-					if row.levelling == nil then
-						row.levelling = parsed.levelling
+					for _, key in ipairs({ "target", "kind", "activity", "activityName", "activityShort",
+						"levelling", "class", "classSet", "profession", "profMode", "size", "wanted" }) do
+						row[key] = parsed[key]
 					end
-					row.activity = row.activity or parsed.activity
-					row.activityName = row.activityName or parsed.activityName
-					row.activityShort = row.activityShort or parsed.activityShort
 					if not locked.role and parsed.roleSet then
 						row.roleSet = parsed.roleSet
 						row.roleText = parsed.roleText
 					end
 					row.orig = row.orig or {}
-
+					row.orig.roleText, row.orig.level, row.orig.bracket, row.orig.prog =
+						parsed.roleText, parsed.level, parsed.bracket, parsed.prog
+					if not locked.level then row.level, row.bracket = parsed.level, parsed.bracket end
+					if not locked.prog then row.prog = parsed.prog end
+					local destination = row.manualBucket or OCS.BucketFor(parsed.route, parsed.tradeIntent or parsed.intent)
+					if destination ~= bucket and OCS_DB.rows[destination] then
+						table.remove(list, j)
+						table.insert(moves, { bucket = destination, row = row })
+					end
+					done = done + 1
+				elseif rejected then
+					table.remove(list, j)
 					done = done + 1
 				end
 				row.schema = OCS.ROW_SCHEMA
 			end
+		end
+	end
+	for _, move in ipairs(moves) do
+		local existing = findRow(move.bucket, move.row.name)
+		if not existing or (move.row.time or 0) >= (existing.time or 0) then
+			if existing then OCS.RemoveRow(move.bucket, move.row.name) end
+			table.insert(OCS_DB.rows[move.bucket], move.row)
 		end
 	end
 	return done
@@ -1284,6 +1303,7 @@ function OCS.HandleMessage(event, message, sender, arg4, arg9, source, language)
 	-- The raw chat string is kept for a whisper and for a copy, the table
 	-- shows the clean text.
 	row.rawMessage = message
+	row.schema, row.manualBucket = OCS.ROW_SCHEMA, nil
 	-- A failure here must not leave the row without a message.
 	local okClean, clean = pcall(OCS.DisplayText, message)
 	if not okClean or type(clean) ~= "string" or clean == "" then

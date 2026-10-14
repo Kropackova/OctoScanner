@@ -7,6 +7,8 @@
 - Vanilla and Octo/Turtle activity vocabularies, including quest groups, battleground queue calls and trade services.
 - `DM` and `VC` identify The Deadmines; explicit Dire Maul wings retain their own aliases. Contact instructions such as `DM me` are excluded from activity matching.
 - Editable cells, per-section column choices and repeat adverts that update the same player's row.
+- Counted roles, available slots in role rosters, minimum levels, linked quest titles and requests for crafting, lockpicking and transport services.
+- Recent saved rows use current parsing rules after an upgrade while retaining manual cell and tab choices.
 - Session-long history with records younger than one hour restored after reload.
 - Filtered alerts, mini feed, seven whisper templates, seven skins and saved addon scale from 50% to 100%.
 - Installer with one `OctoScanner` folder and no required client extensions.

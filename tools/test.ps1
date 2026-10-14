@@ -11,7 +11,7 @@ try {
     if ($LASTEXITCODE -ne 0 -or $testVersion -notmatch '^Lua 5\.0') {
         throw "These checks require Lua 5.0, got: $testVersion"
     }
-    $testFiles = @('tests/run.lua', 'tests/reload.lua', 'tests/history.lua', 'tests/feedback.lua', 'tests/scale.lua', 'tests/ui-scale.lua', 'tests/corpus.lua', 'tests/corpus-third.lua', 'tests/corpus-fourth.lua')
+    $testFiles = @('tests/run.lua', 'tests/reload.lua', 'tests/history.lua', 'tests/feedback.lua', 'tests/scale.lua', 'tests/ui-scale.lua', 'tests/corpus.lua', 'tests/corpus-third.lua', 'tests/corpus-fourth.lua', 'tests/corpus-fifth.lua')
     if (Test-Path -LiteralPath "$testRoot\OctoChatLogger\OctoChatLogger.toc") {
         $testFiles += @('tests/logger.lua', 'tests/logger-night.lua', 'tests/logger-traffic.lua')
     }

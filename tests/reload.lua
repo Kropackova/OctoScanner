@@ -138,4 +138,41 @@ eq(OCS_DB.rows.PVE_LFM[1].target, 'The Deadmines', 'recent generic DM row gains 
 eq(OCS_DB.rows.PVE_LFM[1].schema, OCS.ROW_SCHEMA, 'DM row uses current parser schema')
 eq(OCS_DB.rows.PVE_LFM[1].level, 33, 'DM upgrade preserves manual level')
 eq(OCS_DB.rows.PVE_LFM[1].locked.level, true, 'DM upgrade preserves manual lock')
+reload({rows = {
+    PVE_LFG = {
+        {name = 'Recruiter', time = 990, schema = 6, rawMessage = 'LF tank for scholo 4/5 summ ready!',
+            kind = 'OTHER', target = 'Old value', roleText = 'damage', level = 33,
+            locked = {role = true, level = true}},
+        {name = 'Manual', time = 991, schema = 6, manualBucket = 'PVE_LFG',
+            rawMessage = 'LFM DM healer', kind = 'DGN'},
+    },
+    PVE_LFM = {{name = 'Crescent', time = 992, schema = 6, rawMessage = 'LF4M for Crescent', kind = 'OTHER'}},
+    TRADE_WTS = {
+        {name = 'Conversation', time = 993, schema = 6, rawMessage = 'what happened to all the warlocks selling summons?', kind = 'TRADE_OTHER'},
+        {name = 'Bag', time = 994, schema = 6, rawMessage = "WTS |Hitem:1:0:0:0|h[Miner's Rucksack]|h 15G", kind = 'PROF', profession = 'Mining'},
+    },
+}})
+local function saved(bucket, name)
+    for _, row in ipairs(OCS_DB.rows[bucket]) do if row.name == name then return row end end
+end
+local recruiter = assert(saved('PVE_LFM', 'Recruiter'))
+eq(saved('PVE_LFG', 'Recruiter'), nil, 'upgraded recruiter moves to LFM')
+eq(recruiter.target, 'Scholomance', 'obsolete activity replaced')
+eq(recruiter.kind, 'DGN', 'obsolete generic kind replaced')
+eq(recruiter.roleText, 'damage', 'upgrade preserves manual role')
+eq(recruiter.level, 33, 'upgrade preserves manual level')
+eq(recruiter.orig.roleText, 'tank', 'reset value uses current parse')
+eq(saved('PVE_LFM', 'Crescent').target, 'The Crescent Grove', 'recent unknown gains its named instance')
+eq(saved('TRADE_WTS', 'Conversation'), nil, 'previously accepted conversation removed on upgrade')
+eq(saved('TRADE_WTS', 'Bag').kind, 'GEAR', 'item is no longer a profession service')
+eq(saved('TRADE_WTS', 'Bag').profession, nil, 'obsolete profession removed')
+local manual = assert(saved('PVE_LFG', 'Manual'))
+eq(manual.target, 'The Deadmines', 'manual tab keeps updated activity')
+Mock.now = 1100
+OCS.Ingest('CHAT_MSG_CHANNEL', 'LFM DM tank', 'Manual', 'World', 'World', 'test', 'Common')
+eq(saved('PVE_LFM', 'Manual'), manual, 'repeat advert moves the same manually moved record')
+eq(manual.manualBucket, nil, 'repeat advert restores automatic tab classification')
+eq(manual.schema, OCS.ROW_SCHEMA, 'new adverts retain their parser schema')
+OCS.MoveRow('PVE_LFM', 'Manual', 'PVE_LFG')
+eq(saved('PVE_LFG', 'Manual').manualBucket, 'PVE_LFG', 'manual tab choice retained for later upgrades')
 print('PASS '..passed..' assertions; SavedVariables, reload and profile commands')
