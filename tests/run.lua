@@ -26,7 +26,7 @@ local cases={
     {"60 warrior LFG BRD", "DGN", "Blackrock Depths", "LFG"},
     {"LFM SM cath tank", "DGN", "Scarlet Monastery: Cathedral", "LFM"},
     {"LFM DM tribute", "DGN", "Dire Maul: Tribute", "LFM"},
-    {"LFM DM", "DGN", nil, "LFM"},
+    {"LFM DM", "DGN", "The Deadmines", "LFM"},
     {"LFM MC HR MS/OS", "RAID", "Molten Core", "LFM"},
     {"LFM Azuregos", "WB", "Azuregos", "LFM"},
     {"LFM Naxx 15/40", "RAID", "Naxxramas", "LFM"},

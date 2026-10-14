@@ -5,7 +5,7 @@ OCS.DEFAULT_PACK = "vanilla"
 OCS.VANILLA_CONTENT = {
     { "DGN", "Ragefire Chasm", { "ragefire chasm", "rfc" } },
     { "DGN", "Wailing Caverns", { "wailing caverns", "wc" } },
-    { "DGN", "The Deadmines", { "the deadmines", "deadmines", "deadmine", "dead mines", "dead mes", "vc" } },
+    { "DGN", "The Deadmines", { "the deadmines", "deadmines", "deadmine", "dead mines", "dead mes", "dm", "vc" } },
     { "DGN", "Shadowfang Keep", { "shadowfang keep", "shadownfang keep", "sfk" } },
     { "DGN", "Blackfathom Deeps", { "blackfathom deeps", "blackfathom deep", "blackphantom deeps", "bfd" } },
     { "DGN", "The Stockade", { "stormwind stockade", "the stockade", "the stockades", "stockade", "stockades", "stocks" } },
@@ -86,7 +86,7 @@ function OCS.BuildPack(id, name, roster, options)
             sizeStems = kind == "RAID" and { "ony", "onyxia", "zg", "mc", "bwl" } or nil })
     end
     table.insert(pack.activities, { id = "DGN", name = "Dungeon",
-        words = { "dungeon", "dungeons", "dm", "blackrock spire" } })
+        words = { "dungeon", "dungeons", "blackrock spire" } })
     table.insert(pack.activities, { id = "RAID", name = "Raid",
         words = { "raid", "raids", "aq", "ahn qiraj", "ahnqiraj" } })
     table.insert(pack.activities, { id = "WB", name = "World Boss",
@@ -95,7 +95,7 @@ function OCS.BuildPack(id, name, roster, options)
         table.insert(pack.activities, 5, { id = "LFT", name = "Dungeon Finder",
             words = { "lft", "lfd" }, phrases = { "dungeon finder", "random dungeon" } })
     end
-    local generic = { "dungeon", "dungeons", "raid", "raids", "group", "grp", "guild", "boss", "worldboss", "dm", "lft" }
+    local generic = { "dungeon", "dungeons", "raid", "raids", "group", "grp", "guild", "boss", "worldboss", "lft" }
     for i = 1, table.getn(generic) do table.insert(pack.groupWords, generic[i]) end
     return pack
 end

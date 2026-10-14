@@ -181,7 +181,7 @@ Your class and level are read from your own character, independently of the adve
 
 The Octo vocabulary includes ten added dungeons, four raids, four world bosses, Thorn Gorge, Blood Ring, LFT, Jewelcrafting, Survival crafting, Gardening and transmog trade. See [supported content](docs/CONTENT.md).
 
-Common aliases and spelling variants are recognized. `LFG BM` means Black Morass unless Hunter/spec wording indicates Beast Mastery. `WC` remains Wailing Caverns. `Kara10` and `Kara40` distinguish the raids; bare `Kara`, `DM` and `HC` do not invent a wing or difficulty. Known quest titles are excluded from role, class and level extraction.
+Common aliases and spelling variants are recognized. `DM` means The Deadmines; Dire Maul is recognized by its full name or `DME`, `DMW`, `DMN`, `DMT` and explicit wing names. `DM me` is a contact instruction. `LFG BM` means Black Morass unless Hunter/spec wording indicates Beast Mastery. `WC` remains Wailing Caverns. `Kara10` and `Kara40` distinguish the raids; bare `Kara` and `HC` do not invent a wing or difficulty. Known quest titles are excluded from role, class and level extraction.
 
 Recognized content may not be open on every realm. Octo implementations and release phases can differ from Turtle.
 

@@ -15,6 +15,31 @@ local function parse(text, expected)
     for key, value in pairs(expected) do eq(row[key], value, text .. ' / ' .. key) end
     return row
 end
+-- Bare DM means Deadmines; explicit Dire Maul wings still win.
+for _, profile in ipairs({'vanilla', 'octo', 'turtle'}) do
+    OCS.SelectPack(profile)
+    for _, text in ipairs({'LFM DM', 'LFG DM', 'LF1M for DM Need heal',
+        'DM need healer', 'LFM DM dm me', 'LFM DM dm me dm me', 'DM me for info LFM DM healer'}) do
+        parse(text, {kind = 'DGN', target = 'The Deadmines'})
+    end
+    for _, c in ipairs({
+        {'LFM DM East', 'Dire Maul: East'}, {'LFM DM e', 'Dire Maul: East'},
+        {'LFG DME', 'Dire Maul: East'}, {'LFM DMW', 'Dire Maul: West'},
+        {'LFM DM West', 'Dire Maul: West'}, {'LFM DM N', 'Dire Maul: North'},
+        {'LFG DMN', 'Dire Maul: North'}, {'LFM DMT', 'Dire Maul: Tribute'},
+        {'LFM DM tribute', 'Dire Maul: Tribute'}, {'LFG Dire Maul', 'Dire Maul'},
+    }) do parse(c[1], {kind = 'DGN', target = c[2]}) end
+    parse('LFM MC dm me', {kind = 'RAID', target = 'Molten Core'})
+    parse('LFM MC dm me dm me', {kind = 'RAID', target = 'Molten Core'})
+    parse('LFM Naxx dm for invite', {kind = 'RAID', target = 'Naxxramas'})
+    parse('LFG WSG dm me', {route = 'PVP', kind = 'BG'})
+    local trade = parse('WTS boots 5g DM me', {route = 'TRADE', tradeIntent = 'WTS'})
+    eq(trade.target, nil, 'DM contact text does not supply a trade destination')
+    for _, text in ipairs({'DM me', 'DM me DM me', 'dm for price', 'send me a dm', 'dm for details'}) do
+        eq(OCS.Parse(text), nil, 'contact instructions are not dungeon adverts: ' .. text)
+    end
+end
+OCS.SelectPack('octo')
 for _, c in ipairs({
     {'LFM 1 heal, 3 dps BLACKPHANTOM DEEPS', 'Blackfathom Deeps'},
     {'lvl 27 hunter LFG Blackfathom Deep, quests run', 'Blackfathom Deeps'},

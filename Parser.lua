@@ -831,6 +831,17 @@ function OCS.MatchActivity(t)
 	if not pack then
 		return nil
 	end
+	-- Contact instructions do not name The Deadmines. Keep other occurrences
+	-- of DM in the same advert available to the normal longest-alias match.
+	if has(t, "dm") then
+		for _, phrase in ipairs({ "dm me", "dm for price", "dm for prices",
+			"dm for info", "dm for details", "dm for invite", "dm for inv",
+			"send me a dm", "send a dm", "send dm", "via dm", "in dm" }) do
+			while has(t, phrase) do
+				t = string.gsub(t, " " .. phrase .. " ", " contact ")
+			end
+		end
+	end
 	for i = 1, OCS.Len(pack.activities) do
 		local a = pack.activities[i]
 		local hit = false

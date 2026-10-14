@@ -1149,7 +1149,7 @@ local function safeText(s)
 	return (string.gsub(tostring(s), "|", ""))
 end
 
-OCS.ROW_SCHEMA = 5
+OCS.ROW_SCHEMA = 6
 
 -- Guild recruitment used to sit in the PvE and PvP tabs. It has its own section
 -- now, so stored guild rows are carried across once instead of being stranded

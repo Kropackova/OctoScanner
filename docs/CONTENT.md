@@ -32,7 +32,7 @@ New bosses inside an existing dungeon do not need a separate activity category. 
 - `WC` means Wailing Caverns; `WHC` means Windhorn Canyon.
 - `BM` in group recruitment means Black Morass unless Hunter, pet or spec wording indicates Beast Mastery. It is then excluded from Damage role detection.
 - `Kara10` / `K10` / `LKH` and `Kara40` / `K40` / `UKH` distinguish the raids. Plain `Kara` stays an unspecified raid.
-- `DM` remains an unspecified dungeon. Explicit Dire Maul wings and Tribute are recognized.
+- Bare `DM` means The Deadmines, as does `VC`. Dire Maul uses its full name or a wing: `DME` / `DM East`, `DMW` / `DM West`, `DMN` / `DM North`, or `DMT` / `DM Tribute`. Contact phrases such as `DM me` do not name a dungeon.
 - `HC` alone establishes neither dungeon difficulty nor a character's hardcore status. Emerald Sanctum mode requires explicit Normal/Hard Mode wording.
 - Recognized quest links and plain-text repeats can produce Quest groups. Title words such as Shadow, Hunter or Wanted are not roles, classes or wanted counts. The observed title list is not a complete quest database.
 - A post listing several activities currently chooses one matching activity. Unrecognized requests remain general Group entries.

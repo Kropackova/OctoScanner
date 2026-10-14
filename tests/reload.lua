@@ -132,4 +132,10 @@ eq(OCS_DB.whisper.pveLfm, 'Hi! Level {mylevel} {myclass} here.', 'reviewed PvE g
 eq(OCS_DB.whisper.pveLfg, 'Hi! Still looking for a group?', 'reviewed PvE question shortened')
 eq(OCS_DB.whisper.pvpLfm, 'Hi! Level {mylevel} {myclass} here.', 'reviewed PvP greeting shortened')
 eq(OCS_DB.whisper.pvpLfg, 'Hi! Still looking for a PvP group?', 'reviewed PvP question shortened')
+reload({rows = {PVE_LFM = {{name = 'SavedDM', time = 990, message = 'LFM DM need healer',
+    kind = 'DGN', schema = 5, level = 33, locked = {level = true}}}}})
+eq(OCS_DB.rows.PVE_LFM[1].target, 'The Deadmines', 'recent generic DM row gains its dungeon on upgrade')
+eq(OCS_DB.rows.PVE_LFM[1].schema, OCS.ROW_SCHEMA, 'DM row uses current parser schema')
+eq(OCS_DB.rows.PVE_LFM[1].level, 33, 'DM upgrade preserves manual level')
+eq(OCS_DB.rows.PVE_LFM[1].locked.level, true, 'DM upgrade preserves manual lock')
 print('PASS '..passed..' assertions; SavedVariables, reload and profile commands')
