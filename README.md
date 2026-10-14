@@ -145,7 +145,7 @@ Open **Whisp Templates** or `/ocs whisper` to edit seven lines: PvE LFM, PvE LFG
 
 ![OctoScanner whisper template editor](docs/screenshots/06-whisper-templates.png)
 
-*The editor with saved example text. The current defaults and supported placeholders are listed below; Reset lines restores the defaults.*
+*The whisper editor with the default templates and supported placeholders. Reset lines restores these defaults.*
 
 | Section and intent | Default template |
 | --- | --- |
