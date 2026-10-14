@@ -1,0 +1,12 @@
+dist/
+.tooling/
+.research/
+.upstream/
+__pycache__/
+*.pyc
+*.zip
+WTF/
+Imports/
+Logs/
+OctoChatLogger-*.txt
+OctoChatLogger-*.lua

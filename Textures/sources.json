@@ -1,0 +1,74 @@
+{
+  "repository": "https://github.com/Gethe/wow-ui-textures",
+  "commit": "312a6e61bab69370c65ccc0a08f1075d62196294",
+  "textures": [
+    {
+      "source": "Buttons/UI-Panel-SmallerButton-Up.PNG",
+      "sourceSha256": "736de50207f2aab9b85b3d7ddc9c915be070cf13417e4c64eed086934147435a",
+      "local": "UI-Panel-SmallerButton-Up.tga",
+      "sha256": "74cac6cc17ee9df2e23f361b26c8b9c7d29cc5ba10cc5a8ac28908cc3d445202",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "source": "Buttons/UI-Panel-SmallerButton-Down.PNG",
+      "sourceSha256": "6b71b33f99dc3da931fa7415ea35bc0971cc193f3980a334f88c2bc6671702a8",
+      "local": "UI-Panel-SmallerButton-Down.tga",
+      "sha256": "ed2196a06119b0dc18cbafe72c2f606b09feec4c163ca98bf2e9c6e64875504a",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "source": "Buttons/UI-Panel-BiggerButton-Up.PNG",
+      "sourceSha256": "a1d20e64c24696c089d78c8239173d4c72b48608a015c8d41c16569641ce0e62",
+      "local": "UI-Panel-BiggerButton-Up.tga",
+      "sha256": "0d28d7a140f53d407d453872757dc605365d6869d205eb94d5967b15ea7b2eb6",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "source": "Buttons/UI-Panel-BiggerButton-Down.PNG",
+      "sourceSha256": "e9b9135c8930a4365ad87b553a7fc69cb85e7d8c62feafce69192dfe8b64db2b",
+      "local": "UI-Panel-BiggerButton-Down.tga",
+      "sha256": "2e5ea04b76b4e8475823628e9d39e06326f4fc81609b40b8b6c0e6fa667d9d14",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "source": "CHATFRAME/UI-ChatIM-SizeGrabber-Up.PNG",
+      "sourceSha256": "633af129709fb7a8cb80f91c66408dd15700e04e9e8150c70f9d8e00e25d3fb2",
+      "local": "UI-ChatIM-SizeGrabber-Up.tga",
+      "sha256": "124cc26b23ebf7d789ff307c20fef1718d77a9e029d3fee746b633d33b8dddf4",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "source": "CHATFRAME/UI-ChatIM-SizeGrabber-Down.PNG",
+      "sourceSha256": "bd683e58fade877380e8ef802f2c908c33ea30efbc4b1ad48d429a8307c2ba48",
+      "local": "UI-ChatIM-SizeGrabber-Down.tga",
+      "sha256": "783cb78946d0817c4d7eb44ebcf9d0fba6c052885e5e24e49d04c2c108826690",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "source": "CHATFRAME/UI-ChatIM-SizeGrabber-Highlight.PNG",
+      "sourceSha256": "dca8f1aca98decb429786331220877a1d7ae3cc63b770e6afbe5c76e275c0e9d",
+      "local": "UI-ChatIM-SizeGrabber-Highlight.tga",
+      "sha256": "73575c4a083bb9ea7272c6d8131d87da4db7003139e53645540680f1738835b5",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "source": "Client fonts.MPQ: Fonts/FRIZQT__.TTF; rendered text OctoScanner at 64, displayed at 30% size",
+      "sourceSha256": "8f798feb09a0e9dc97daf0a54b52a9a1a7b4cf7103fcb2aa1566ab36ac4dc41c",
+      "local": "OctoScannerTitle.tga",
+      "sha256": "a5c9b151dd4b525b711f9bacc35c5d6f7bda1c7c20ffdbee55ee3ca9e1feb42b",
+      "width": 512,
+      "height": 64,
+      "contentWidth": 394,
+      "contentHeight": 50,
+      "displayWidth": 118.2,
+      "displayHeight": 15.0
+    }
+  ]
+}

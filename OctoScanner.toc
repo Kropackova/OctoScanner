@@ -1,0 +1,17 @@
+## Interface: 11200
+## Title: OctoScanner
+## Notes: Chat group, PvP, trade and guild scanner for OctoWoW / Turtle 1.18.1 and Vanilla.
+## Author: Kropackova
+## Version: 1.0.0
+## SavedVariablesPerCharacter: OCS_DB
+
+Compat.lua
+Scale.lua
+Packs.lua
+Turtle.lua
+Parser.lua
+Quests.lua
+Core.lua
+Alerts.lua
+UI.lua
+Mini.lua
